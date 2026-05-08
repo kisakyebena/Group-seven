@@ -1,0 +1,64 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+        request.auth.token.email == 'kisakyebenadette@gmail.com';
+    }
+    
+    // Visitors collection
+    match /visitors/{visitorId} {
+      // Only authenticated users can read visitors
+      allow read: if isAuthenticated();
+      
+      // Only authenticated users can create visitors
+      allow create: if isAuthenticated() && 
+        request.resource.data.keys().hasAll([
+          'name', 'ninNumber', 'contact', 'personToVisit',
+          'district', 'timeIn', 'status'
+        ]);
+      
+      // Only authenticated users can update visitors
+      allow update: if isAuthenticated();
+      
+      // Only admin can delete
+      allow delete: if isAdmin();
+    }
+    
+    // Appointments collection
+    match /appointments/{appointmentId} {
+      // Only authenticated users can read appointments
+      allow read: if isAuthenticated();
+      
+      // Only authenticated users can create appointments
+      allow create: if isAuthenticated() && 
+        request.resource.data.keys().hasAll([
+          'visitorName', 'visitorContact', 'personToVisit',
+          'appointmentDate', 'status'
+        ]);
+      
+      // Only authenticated users can update appointments
+      allow update: if isAuthenticated();
+      
+      // Only admin can delete
+      allow delete: if isAdmin();
+    }
+    
+    // Staff collection (optional)
+    match /staff/{staffId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+    
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

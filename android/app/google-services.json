@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "1089015540051",
+    "project_id": "ugandapris",
+    "storage_bucket": "ugandapris.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1089015540051:android:6ff603d4fe84f8d48d99a6",
+        "android_client_info": {
+          "package_name": "com.example.priapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1089015540051-a2eddso23168rb8s3s2mf00vo6c3abo5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwnv6DfbUN12c_nID8Uy5GBbRIQbPcN8A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1089015540051-a2eddso23168rb8s3s2mf00vo6c3abo5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1089015540051:android:9cd36b0097f1a60c8d99a6",
+        "android_client_info": {
+          "package_name": "com.example.uganda_prison_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1089015540051-a2eddso23168rb8s3s2mf00vo6c3abo5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwnv6DfbUN12c_nID8Uy5GBbRIQbPcN8A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1089015540051-a2eddso23168rb8s3s2mf00vo6c3abo5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
