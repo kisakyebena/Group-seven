@@ -4,7 +4,8 @@ import 'package:intl/intl.dart';
 import '../providers/auth_provider.dart';
 import '../screens/register_visitor_screen.dart';
 import '../screens/view_visitors_screen.dart';
-import '../screens/schedule_appointment_screen.dart';
+import '../screens/manage_appointments_screen.dart';
+import '../screens/register_staff_screen.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key});
@@ -12,6 +13,7 @@ class CustomDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authProvider = context.watch<AuthProvider>();
+    final isAdmin = authProvider.isAdmin;
     final theme = Theme.of(context);
 
     return Drawer(
@@ -67,6 +69,25 @@ class CustomDrawer extends StatelessWidget {
                         fontSize: 14,
                       ),
                     ),
+                    if (isAdmin) ...[
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Text(
+                          'ADMIN',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -86,15 +107,21 @@ class CustomDrawer extends StatelessWidget {
                   child: ListView(
                     padding: const EdgeInsets.symmetric(vertical: 20),
                     children: [
-                      _buildDrawerItem(
-                        context: context,
-                        icon: Icons.dashboard_rounded,
-                        title: 'Dashboard',
-                        isSelected: true,
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                      ),
+                      if (isAdmin)
+                        _buildDrawerItem(
+                          context: context,
+                          icon: Icons.person_add_alt_1_rounded,
+                          title: 'Register Staff',
+                          onTap: () {
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const RegisterStaffScreen(),
+                              ),
+                            );
+                          },
+                        ),
                       _buildDrawerItem(
                         context: context,
                         icon: Icons.person_add_rounded,
@@ -132,28 +159,29 @@ class CustomDrawer extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => const ScheduleAppointmentScreen(),
+                              builder: (_) => const ManageAppointmentsScreen(),
                             ),
                           );
                         },
                       ),
-                      _buildDrawerItem(
-                        context: context,
-                        icon: Icons.assessment_rounded,
-                        title: 'Reports',
-                        onTap: () {
-                          Navigator.pop(context);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: const Text('Reports coming soon'),
-                              behavior: SnackBarBehavior.floating,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
+                      if (isAdmin)
+                        _buildDrawerItem(
+                          context: context,
+                          icon: Icons.assessment_rounded,
+                          title: 'Reports',
+                          onTap: () {
+                            Navigator.pop(context);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: const Text('Reports coming soon'),
+                                behavior: SnackBarBehavior.floating,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                      ),
+                            );
+                          },
+                        ),
                       _buildDrawerItem(
                         context: context,
                         icon: Icons.settings_rounded,

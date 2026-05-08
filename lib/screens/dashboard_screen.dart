@@ -6,7 +6,8 @@ import '../services/visitor_service.dart';
 import '../widgets/custom_drawer.dart';
 import 'register_visitor_screen.dart';
 import 'view_visitors_screen.dart';
-import 'schedule_appointment_screen.dart';
+import 'manage_appointments_screen.dart';
+import 'register_staff_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -34,6 +35,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final authProvider = context.watch<AuthProvider>();
+    final isAdmin = authProvider.isAdmin;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F7FA),
@@ -242,6 +244,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   children: [
+                    if (isAdmin)
+                      _buildQuickAction(
+                        icon: Icons.person_add_alt_1_rounded,
+                        title: 'Register\nStaff',
+                        color: const Color(0xFF9B59B6),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const RegisterStaffScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                    if (isAdmin) const SizedBox(width: 12),
                     _buildQuickAction(
                       icon: Icons.person_add_rounded,
                       title: 'Register\nVisitor',
@@ -272,24 +289,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     const SizedBox(width: 12),
                     _buildQuickAction(
                       icon: Icons.calendar_today_rounded,
-                      title: 'Schedule\nVisit',
+                      title: 'Appointments',
                       color: const Color(0xFFF39C12),
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => const ScheduleAppointmentScreen(),
+                            builder: (_) => const ManageAppointmentsScreen(),
                           ),
                         );
                       },
                     ),
                     const SizedBox(width: 12),
-                    _buildQuickAction(
-                      icon: Icons.assessment_rounded,
-                      title: 'Generate\nReport',
-                      color: const Color(0xFF9B59B6),
-                      onTap: () {},
-                    ),
+                    if (isAdmin)
+                      _buildQuickAction(
+                        icon: Icons.assessment_rounded,
+                        title: 'Generate\nReport',
+                        color: const Color(0xFF9B59B6),
+                        onTap: () {},
+                      ),
                   ],
                 ),
               ),

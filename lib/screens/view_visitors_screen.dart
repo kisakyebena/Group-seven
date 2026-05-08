@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../services/visitor_service.dart';
 import '../models/visitor.dart';
+import '../widgets/custom_drawer.dart';
 import 'visitor_detail_screen.dart';
 
 class ViewVisitorsScreen extends StatefulWidget {
@@ -34,30 +35,30 @@ class _ViewVisitorsScreenState extends State<ViewVisitorsScreen>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Scaffold(
       backgroundColor: const Color(0xFFF5F7FA),
+      drawer: const CustomDrawer(),
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
-        leading: IconButton(
-          icon: Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 10,
-                ),
-              ],
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
+                  ),
+                ],
+              ),
+              child: const Icon(Icons.menu_rounded, color: Color(0xFF0D3B66)),
             ),
-            child:
-                const Icon(Icons.arrow_back_rounded, color: Color(0xFF0D3B66)),
+            onPressed: () => Scaffold.of(context).openDrawer(),
           ),
-          onPressed: () => Navigator.pop(context),
         ),
         title: _isSearching
             ? TextField(
@@ -174,8 +175,7 @@ class _ViewVisitorsScreenState extends State<ViewVisitorsScreen>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.error_outline,
-                    size: 48, color: Colors.grey.shade400),
+                Icon(Icons.error_outline, size: 48, color: Colors.grey.shade400),
                 const SizedBox(height: 16),
                 Text(
                   'Error loading visitors',
@@ -188,7 +188,6 @@ class _ViewVisitorsScreenState extends State<ViewVisitorsScreen>
 
         List<Visitor> visitors = snapshot.data ?? [];
 
-        // Apply search filter
         if (_searchQuery.isNotEmpty) {
           visitors = visitors.where((v) {
             return v.name.toLowerCase().contains(_searchQuery) ||
@@ -244,7 +243,6 @@ class _ViewVisitorsScreenState extends State<ViewVisitorsScreen>
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
-                // Status Indicator
                 Container(
                   width: 50,
                   height: 50,
@@ -263,8 +261,6 @@ class _ViewVisitorsScreenState extends State<ViewVisitorsScreen>
                   ),
                 ),
                 const SizedBox(width: 16),
-
-                // Visitor Info
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -312,8 +308,6 @@ class _ViewVisitorsScreenState extends State<ViewVisitorsScreen>
                     ],
                   ),
                 ),
-
-                // Time & Action
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
@@ -339,7 +333,7 @@ class _ViewVisitorsScreenState extends State<ViewVisitorsScreen>
                       ),
                     ),
                     const SizedBox(height: 8),
-                    if (isActive)
+                    if (isActive) ...[
                       Row(
                         children: [
                           Icon(Icons.timer,
@@ -354,8 +348,25 @@ class _ViewVisitorsScreenState extends State<ViewVisitorsScreen>
                             ),
                           ),
                         ],
-                      )
-                    else
+                      ),
+                      const SizedBox(height: 8),
+                      TextButton(
+                        onPressed: () => _checkoutVisitor(visitor.id!),
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 4),
+                          backgroundColor: Colors.red.withOpacity(0.1),
+                        ),
+                        child: const Text(
+                          'Checkout',
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ] else
                       Text(
                         DateFormat('HH:mm').format(visitor.timeOut!),
                         style: TextStyle(
@@ -494,5 +505,39 @@ class _ViewVisitorsScreenState extends State<ViewVisitorsScreen>
         ],
       ),
     );
+  }
+
+  Future<void> _checkoutVisitor(String visitorId) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        title: const Text('Confirm Checkout'),
+        content: const Text(
+          'Are you sure you want to checkout this visitor? They will no longer be marked as active.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            child: const Text('Checkout'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      await _visitorService.checkoutVisitor(visitorId);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Visitor checked out successfully')),
+      );
+    }
   }
 }
