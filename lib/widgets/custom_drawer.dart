@@ -122,20 +122,21 @@ class CustomDrawer extends StatelessWidget {
                             );
                           },
                         ),
-                      _buildDrawerItem(
-                        context: context,
-                        icon: Icons.person_add_rounded,
-                        title: 'Register Visitor',
-                        onTap: () {
-                          Navigator.pop(context);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const RegisterVisitorScreen(),
-                            ),
-                          );
-                        },
-                      ),
+                      if (!isAdmin)
+                        _buildDrawerItem(
+                          context: context,
+                          icon: Icons.person_add_rounded,
+                          title: 'Register Visitor',
+                          onTap: () {
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const RegisterVisitorScreen(),
+                              ),
+                            );
+                          },
+                        ),
                       _buildDrawerItem(
                         context: context,
                         icon: Icons.people_alt_rounded,

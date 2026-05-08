@@ -259,7 +259,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         },
                       ),
                     if (isAdmin) const SizedBox(width: 12),
-                    _buildQuickAction(
+                    if (!isAdmin) _buildQuickAction(
                       icon: Icons.person_add_rounded,
                       title: 'Register\nVisitor',
                       color: const Color(0xFF4A90E2),
@@ -272,7 +272,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         );
                       },
                     ),
-                    const SizedBox(width: 12),
+                    if (!isAdmin) const SizedBox(width: 12),
                     _buildQuickAction(
                       icon: Icons.search_rounded,
                       title: 'Search\nVisitor',
