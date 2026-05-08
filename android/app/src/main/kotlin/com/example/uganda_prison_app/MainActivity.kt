@@ -1,4 +1,4 @@
-package com.example.uganda_prison_fresh
+package com.example.uganda_prison_app
 
 import io.flutter.embedding.android.FlutterActivity
 
