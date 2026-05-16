@@ -138,6 +138,15 @@ class AuthService {
       return null;
     });
   }
+
+  Stream<List<AppUser>> getStaffStream() {
+    return _firestore
+        .collection('users')
+        .where('role', isEqualTo: 'staff')
+        .snapshots()
+        .map((snapshot) =>
+            snapshot.docs.map((doc) => AppUser.fromFirestore(doc)).toList());
+  }
 }
 
 class AuthResult {

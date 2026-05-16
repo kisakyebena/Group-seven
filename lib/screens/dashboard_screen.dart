@@ -8,6 +8,7 @@ import 'register_visitor_screen.dart';
 import 'view_visitors_screen.dart';
 import 'manage_appointments_screen.dart';
 import 'register_staff_screen.dart';
+import 'view_staff_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -258,21 +259,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           );
                         },
                       ),
-                    if (isAdmin) const SizedBox(width: 12),
-                    if (!isAdmin) _buildQuickAction(
-                      icon: Icons.person_add_rounded,
-                      title: 'Register\nVisitor',
-                      color: const Color(0xFF4A90E2),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const RegisterVisitorScreen(),
-                          ),
-                        );
-                      },
-                    ),
-                    if (!isAdmin) const SizedBox(width: 12),
+                    if (isAdmin)
+                      const SizedBox(width: 12),
+                    if (!isAdmin)
+                      _buildQuickAction(
+                        icon: Icons.person_add_rounded,
+                        title: 'Register\nVisitor',
+                        color: const Color(0xFF4A90E2),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const RegisterVisitorScreen(),
+                            ),
+                          );
+                        },
+                      ),
                     _buildQuickAction(
                       icon: Icons.search_rounded,
                       title: 'Search\nVisitor',
@@ -287,6 +289,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       },
                     ),
                     const SizedBox(width: 12),
+                    if (isAdmin)
+                      _buildQuickAction(
+                        icon: Icons.person_search_rounded,
+                        title: 'Search\nStaff',
+                        color: const Color(0xFFE74C3C),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const ViewStaffScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                    if (isAdmin) const SizedBox(width: 12),
                     _buildQuickAction(
                       icon: Icons.calendar_today_rounded,
                       title: 'Appointments',

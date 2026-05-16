@@ -6,6 +6,7 @@ import '../screens/register_visitor_screen.dart';
 import '../screens/view_visitors_screen.dart';
 import '../screens/manage_appointments_screen.dart';
 import '../screens/register_staff_screen.dart';
+import '../screens/view_staff_screen.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key});
@@ -165,20 +166,35 @@ class CustomDrawer extends StatelessWidget {
                           );
                         },
                       ),
+if (isAdmin)
+                         _buildDrawerItem(
+                           context: context,
+                           icon: Icons.assessment_rounded,
+                           title: 'Reports',
+                           onTap: () {
+                             Navigator.pop(context);
+                             ScaffoldMessenger.of(context).showSnackBar(
+                               SnackBar(
+                                 content: const Text('Reports coming soon'),
+                                 behavior: SnackBarBehavior.floating,
+                                 shape: RoundedRectangleBorder(
+                                   borderRadius: BorderRadius.circular(10),
+                                 ),
+                               ),
+                             );
+                           },
+                         ),
                       if (isAdmin)
                         _buildDrawerItem(
                           context: context,
-                          icon: Icons.assessment_rounded,
-                          title: 'Reports',
+                          icon: Icons.person_search_rounded,
+                          title: 'Search Staff',
                           onTap: () {
                             Navigator.pop(context);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: const Text('Reports coming soon'),
-                                behavior: SnackBarBehavior.floating,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const ViewStaffScreen(),
                               ),
                             );
                           },
