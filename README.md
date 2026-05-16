@@ -1,2 +1,2 @@
-# Group-seven
+Group7
 Mobile application project
