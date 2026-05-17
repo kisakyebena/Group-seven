@@ -118,12 +118,12 @@ class VisitorService {
   }) async {
     final updates = <String, dynamic>{
       'status': status,
-      'updatedAt': Timestamp.fromDate(DateTime.now()),
+      'updatedAt': FieldValue.serverTimestamp(),
     };
 
     if (status == 'approved') {
       updates['approvedBy'] = approvedBy;
-      updates['approvedAt'] = Timestamp.fromDate(DateTime.now());
+      updates['approvedAt'] = FieldValue.serverTimestamp();
     }
 
     await _appointmentsRef.doc(appointmentId).update(updates);

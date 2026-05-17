@@ -107,7 +107,7 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
   }
 
   Widget _buildAppointmentCard(Appointment appointment, bool isAdmin) {
-    final canApprove = isAdmin || appointment.status == 'pending';
+    final canApprove = isAdmin && appointment.status == 'pending';
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -144,7 +144,7 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    appointment.status.toUpperCase(),
+                    _getStatusLabel(appointment.status),
                     style: TextStyle(
                       color: _getStatusColor(appointment.status),
                       fontSize: 11,
@@ -172,7 +172,7 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
                 style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
               ),
             ],
-            if (canApprove && appointment.status == 'pending') ...[
+            if (canApprove) ...[
               const SizedBox(height: 12),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -203,28 +203,68 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
     );
   }
 
+  String _getStatusLabel(String status) {
+    switch (status) {
+      case 'approved':
+        return 'APPROVED';
+      case 'rejected':
+        return 'REJECTED';
+      case 'cancelled':
+        return 'CANCELLED';
+      case 'completed':
+        return 'COMPLETED';
+      default:
+        return 'PENDING';
+    }
+  }
+
   Color _getStatusColor(String status) {
     switch (status) {
       case 'approved':
         return Colors.green;
       case 'rejected':
         return Colors.red;
+      case 'cancelled':
+        return const Color(0xFFE74C3C);
+      case 'completed':
+        return Colors.grey;
       default:
-        return Colors.orange;
+        return const Color(0xFFF39C12);
     }
   }
 
   Future<void> _updateStatus(String appointmentId, String status) async {
     final authProvider = context.read<AuthProvider>();
-    await _visitorService.updateAppointmentStatus(
-      appointmentId,
-      status,
-      approvedBy: authProvider.userName,
-    );
+    try {
+      await _visitorService.updateAppointmentStatus(
+        appointmentId,
+        status,
+        approvedBy: authProvider.userName,
+      );
 
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Appointment $status')),
-    );
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Appointment $status successfully'),
+          backgroundColor: status == 'approved' ? Colors.green : Colors.red,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to update appointment: $e'),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+      );
+    }
   }
 }
